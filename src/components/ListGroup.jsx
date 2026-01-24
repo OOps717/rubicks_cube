@@ -1,8 +1,8 @@
 import { useRef, useEffect, useState, Fragment } from "react";
+import SaveButton from "./Buttons/SaveButton";
+import LoadLatestButton from "./Buttons/LoadLatestButton";
 
-function ListGroup({ paramsRef }) {
-  const [inputSpeed, setInputSpeed] = useState("1");
-  const [selected, setSelected] = useState("");
+function ListGroup({ paramsRef, cubeState, setLoadedData}) {
   const [seconds, setSeconds] = useState(0);
   const [running, setRunning] = useState(false);
 
@@ -83,9 +83,22 @@ function ListGroup({ paramsRef }) {
           key="main-buttons" 
           className="list-group-item d-flex justify-content-between align-items-center"
         >
-          <button type="button" className="btn btn-primaryс" onClick={start}>Start</button>
-          <button type="button" className="btn btn-primaryс" onClick={restart}>Restart</button>
-          <button type="button" className="btn btn-primaryс" onClick={stop}>Stop</button>
+          <button type="button" className="btn btn-primary" onClick={start} disabled={running}>Start</button>
+          <button type="button" className="btn btn-primary" onClick={restart} disabled={!running}>Restart</button>
+          <button type="button" className="btn btn-primary" onClick={stop} disabled={!running}>Stop</button>
+        </li>
+        <li 
+          key="save-button" 
+          className="list-group-item d-flex justify-content-between align-items-center"
+        >
+          <SaveButton duration={seconds} running={running} cubeState={cubeState}></SaveButton>
+          <LoadLatestButton 
+            setLoadedData={setLoadedData} 
+            setSeconds={setSeconds}
+            setRunning={setRunning}
+            paramsRef={paramsRef}
+          >  
+          </LoadLatestButton>
         </li>
       </ul>
 

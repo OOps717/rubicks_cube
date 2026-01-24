@@ -1,3 +1,8 @@
 1. Add stop timer when cube is completed
-2. Code cleaning
-3. Add sound effects
+2. Add cube size changing possibility
+3. Code cleaning
+4. Add sound effects
+5. Add database to save the progression
+  - Firstly, add simple base with current positions + current rotations + timer stores (stores positions at each rotation)
+  - Secondly add button "Save" to save specific positions, rotations at specific time
+  - Thirdly create and show the list of saved positions and rotations with load and delete buttons

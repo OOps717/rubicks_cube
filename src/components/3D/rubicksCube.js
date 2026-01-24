@@ -68,7 +68,7 @@ export class RubicksCube {
       return new THREE.Vector3(0, Math.sign(axis.y), 0);
   
     return new THREE.Vector3(0, 0, Math.sign(axis.z));
-  }
+  };
 
   reinitialize () {
     const shift = -(this.size - this.cubeSize)/2
@@ -82,7 +82,14 @@ export class RubicksCube {
         } 
       }
     }
-  }
+  };
+
+  loadData (data) {
+    this.cubes.children.forEach((cube,i) => {
+      cube.position.set(data.cubes[i].x, data.cubes[i].y, data.cubes[i].z);
+      cube.rotation.set(data.cubes[i].rotX, data.cubes[i].rotY, data.cubes[i].rotZ);
+    });
+  };
 
   randomizeMove() {
     const AXES = [
@@ -100,7 +107,7 @@ export class RubicksCube {
 
     faceGroup.rotateOnWorldAxis(axis, Math.PI/2); 
     this.finalizeRotation(faceGroup);
-  }
+  };
 
   determineRotationAxis(delta, hitNormal, camera) {
     const dragDir = new THREE.Vector3(delta.x, -delta.y, 0).normalize();
@@ -111,7 +118,7 @@ export class RubicksCube {
       .normalize();
   
     return this.#snapAxis(axis);
-  }
+  };
 
   selectFaceByAxis(axis, selectedCubie) {
     const face = []
@@ -139,7 +146,7 @@ export class RubicksCube {
 
     faceGroup.add(...face);
     return faceGroup;
-  }
+  };
 
   rotateFace(camera, faceGroup, rotationAxis, hitNormal, delta) {
     const dragDir = new THREE.Vector3(delta.x, -delta.y, 0).normalize();
@@ -163,7 +170,7 @@ export class RubicksCube {
     }
 
     this.scene.remove(faceGroup);
-  }
+  };
 }
 
 export default RubicksCube;

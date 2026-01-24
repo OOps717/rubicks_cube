@@ -43,9 +43,10 @@ function animateRotation(rubicksCube) {
   requestAnimationFrame(tick);
 }
 
-export function initThree(container, paramsRef) {
+export function initThree(container, paramsRef, setCubeState, loadedRef) {
 
   const { scene, camera, rubicksCube } = createScene();
+  setCubeState(rubicksCube.cubes);
   const renderer = createRenderer(container);
 
   let running = true;
@@ -64,7 +65,7 @@ export function initThree(container, paramsRef) {
   let isDragging = false;
   let faceGroup = null;
 
-  window.addEventListener("pointerdown", (event) => {
+  renderer.domElement.addEventListener("pointerdown", (event) => {
     if (event.button === 0 && paramsRef.current.running) {
       const rect = canvas.getBoundingClientRect();
       mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -104,14 +105,16 @@ export function initThree(container, paramsRef) {
     }
   });
 
-  window.addEventListener("pointerup", () => {
+  renderer.domElement.addEventListener("pointerup", () => {
     if (!faceGroup || !rotationAxis || !isDragging) return;
 
     if (!snapState) {
       startSnap(faceGroup, rotationAxis);
-      animateRotation(rubicksCube);
+      animateRotation(rubicksCube); 
     }
 
+    setCubeState(rubicksCube.cubes);
+    
     faceGroup = null;
     rotationAxis = null;
     hitCubie = null;
@@ -143,6 +146,10 @@ export function initThree(container, paramsRef) {
     if (paramsRef.current.stopped) {
       rubicksCube.reinitialize();
       paramsRef.current.stopped = false;
+    }
+    if (loadedRef.current.data) {
+      rubicksCube.loadData(loadedRef.current.data);
+      loadedRef.current.data = null
     }
     controls.update();
     renderer.render(scene, camera);
