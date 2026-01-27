@@ -1,8 +1,11 @@
-import { useRef, useEffect, useState, Fragment } from "react";
+import { useRef, useEffect, useState } from "react";
 import SaveButton from "./Buttons/SaveButton";
 import LoadLatestButton from "./Buttons/LoadLatestButton";
+import Savings from "./TableOfSavings";
 
-function ListGroup({ paramsRef, cubeState, setLoadedData}) {
+function ListGroup(props) {
+  const { paramsRef, cubeState, setLoadedData } = props;
+  const [savings, setSavings] = useState([]);
   const [seconds, setSeconds] = useState(0);
   const [running, setRunning] = useState(false);
 
@@ -49,6 +52,20 @@ function ListGroup({ paramsRef, cubeState, setLoadedData}) {
     );
   };
 
+  const loadAllSavings = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/saving/");
+      const data = await response.json();
+      setSavings(data.rows);
+    } catch (err) {
+      console.error("Failed to load savings", err);
+    }
+  };
+
+  useEffect(() => {
+    loadAllSavings();
+  }, []);
+
   return (
     <div
       style={{
@@ -87,11 +104,29 @@ function ListGroup({ paramsRef, cubeState, setLoadedData}) {
           <button type="button" className="btn btn-primary" onClick={restart} disabled={!running}>Restart</button>
           <button type="button" className="btn btn-primary" onClick={stop} disabled={!running}>Stop</button>
         </li>
+        <li
+          key="savings-table"
+          className="list-group-item"
+        >
+          <Savings 
+            savings={savings}
+            setLoadedData={setLoadedData} 
+            setSeconds={setSeconds}
+            setRunning={setRunning}
+            paramsRef={paramsRef}
+          >  
+          </Savings>
+        </li>
         <li 
           key="save-button" 
           className="list-group-item d-flex justify-content-between align-items-center"
         >
-          <SaveButton duration={seconds} running={running} cubeState={cubeState}></SaveButton>
+          <SaveButton 
+            duration={seconds} 
+            running={running} 
+            cubeState={cubeState}
+            loadAllSavings={loadAllSavings}
+          ></SaveButton>
           <LoadLatestButton 
             setLoadedData={setLoadedData} 
             setSeconds={setSeconds}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-function LoadLatestButton({setLoadedData, setSeconds, setRunning, paramsRef}) {
+function LoadLatestButton(props) {
+  const {setLoadedData, setSeconds, setRunning, paramsRef} = props;
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
@@ -15,7 +16,6 @@ function LoadLatestButton({setLoadedData, setSeconds, setRunning, paramsRef}) {
       setLoadedData(loadedSaving);
       setRunning(true);
       paramsRef.current.running = true;
-      // paramsRef.current.restarted = true;
     }
     setLoading(false);
   };

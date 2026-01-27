@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-function SaveButton({duration, running, cubeState}) {
+function SaveButton(props) {
+  const {duration, running, cubeState, loadAllSavings} = props;
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
@@ -11,12 +12,12 @@ function SaveButton({duration, running, cubeState}) {
         rotation: cube.rotation
       }
     })
-    const response = await fetch("http://localhost:3000/api/saving", {
+    await fetch("http://localhost:3000/api/saving", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ duration, cubeInfo }),
-    });
-    
+    }); 
+    await loadAllSavings();
     setLoading(false);
   };
 

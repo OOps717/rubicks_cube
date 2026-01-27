@@ -1,0 +1,11 @@
+.table-scroll tbody {
+  display: block;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.table-scroll thead,
+.table-scroll tbody tr {
+  display: table;
+  table-layout: fixed;
+}

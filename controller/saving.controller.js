@@ -53,9 +53,38 @@ class SavingController {
   };
 
   async getOneSaving(req, res) {
-    const cubeid = req.params.cubeid;
-    const saving = await db.query("SELECT * FROM savings WHERE cubeid=$1", [cubeid]);
-    res.json(saving.rows[0]);
+    try {
+      const cubeid = req.params.cubeid;
+      const result = await db.query(`
+        SELECT
+          s.cubeid,
+          EXTRACT(EPOCH FROM s.duration)::INT AS duration,
+          s.created_at,
+          cm.x, cm.y, cm.z,
+          cm.rotx, cm.roty, cm.rotz
+        FROM savings s
+        JOIN cubesmodifications cm
+          ON s.cubeid = cm.cubeid
+        WHERE s.cubeid = $1
+        ORDER BY cm.id;
+      `, [cubeid]);
+      res.json({
+        cubeid: result.rows[0]?.cubeid,
+        duration: result.rows[0]?.duration,
+        created_at: result.rows[0]?.created_at,
+        cubes: result.rows.map(r => ({
+          x: r.x,
+          y: r.y,
+          z: r.z,
+          rotX: r.rotx,
+          rotY: r.roty,
+          rotZ: r.rotz,
+        }))
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "DB error" });
+    }
   };
 
   async getLatestSaving(req, res) {
