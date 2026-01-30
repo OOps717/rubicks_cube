@@ -1,8 +1,7 @@
 import * as THREE from "three";
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { createScene } from "./scene";
 import { createRenderer } from "./renderer";
-
 
 let accumulatedAngle = 0;
 let snapState = null;
@@ -19,7 +18,7 @@ function startSnap(group, axis) {
     to,
     start: performance.now(),
     last: from,
-    duration: 150
+    duration: 150,
   };
   accumulatedAngle = 0;
 }
@@ -44,14 +43,13 @@ function animateRotation(rubicksCube) {
 }
 
 export function initThree(container, paramsRef, setCubeState, loadedRef) {
-
   const { scene, camera, rubicksCube } = createScene();
   setCubeState(rubicksCube.cubes);
   const renderer = createRenderer(container);
 
   let running = true;
 
-  const controls = new OrbitControls( camera, renderer.domElement );
+  const controls = new OrbitControls(camera, renderer.domElement);
   const canvas = renderer.domElement;
 
   const raycaster = new THREE.Raycaster();
@@ -70,14 +68,15 @@ export function initThree(container, paramsRef, setCubeState, loadedRef) {
       const rect = canvas.getBoundingClientRect();
       mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-      
+
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects(scene.children, true);
 
       if (intersects.length === 0) return;
       hitCubie = intersects[0].object;
 
-      hitNormal.copy(intersects[0].face.normal)
+      hitNormal
+        .copy(intersects[0].face.normal)
         .transformDirection(hitCubie.matrixWorld)
         .normalize();
 
@@ -95,13 +94,23 @@ export function initThree(container, paramsRef, setCubeState, loadedRef) {
     prevMouse.copy(curr);
 
     if (!rotationAxis && delta.length() > 3) {
-      rotationAxis = rubicksCube.determineRotationAxis(delta, hitNormal, camera);
+      rotationAxis = rubicksCube.determineRotationAxis(
+        delta,
+        hitNormal,
+        camera,
+      );
       faceGroup = rubicksCube.selectFaceByAxis(rotationAxis, hitCubie);
       return;
     }
-    
+
     if (rotationAxis) {
-      accumulatedAngle += rubicksCube.rotateFace(camera, faceGroup, rotationAxis, hitNormal, delta);
+      accumulatedAngle += rubicksCube.rotateFace(
+        camera,
+        faceGroup,
+        rotationAxis,
+        hitNormal,
+        delta,
+      );
     }
   });
 
@@ -110,11 +119,11 @@ export function initThree(container, paramsRef, setCubeState, loadedRef) {
 
     if (!snapState) {
       startSnap(faceGroup, rotationAxis);
-      animateRotation(rubicksCube); 
+      animateRotation(rubicksCube);
     }
 
     setCubeState(rubicksCube.cubes);
-    
+
     faceGroup = null;
     rotationAxis = null;
     hitCubie = null;
@@ -135,12 +144,14 @@ export function initThree(container, paramsRef, setCubeState, loadedRef) {
   function animate(now) {
     if (!running) return;
     if (paramsRef.current.started) {
-      for(let i = 0; i < Math.floor(Math.random() * (100 - 50 + 1)) + 50; i++) rubicksCube.randomizeMove();
+      for (let i = 0; i < Math.floor(Math.random() * (100 - 50 + 1)) + 50; i++)
+        rubicksCube.randomizeMove();
       paramsRef.current.started = false;
     }
     if (paramsRef.current.restarted) {
       rubicksCube.reinitialize();
-      for(let i = 0; i < Math.floor(Math.random() * (100 - 50 + 1)) + 50; i++) rubicksCube.randomizeMove();
+      for (let i = 0; i < Math.floor(Math.random() * (100 - 50 + 1)) + 50; i++)
+        rubicksCube.randomizeMove();
       paramsRef.current.restarted = false;
     }
     if (paramsRef.current.stopped) {
@@ -149,7 +160,7 @@ export function initThree(container, paramsRef, setCubeState, loadedRef) {
     }
     if (loadedRef.current.data) {
       rubicksCube.loadData(loadedRef.current.data);
-      loadedRef.current.data = null
+      loadedRef.current.data = null;
     }
     controls.update();
     renderer.render(scene, camera);

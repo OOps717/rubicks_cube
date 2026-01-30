@@ -1,5 +1,5 @@
 import express from "express";
-import 'dotenv/config';
+import "dotenv/config";
 import path from "path";
 import { fileURLToPath } from "url";
 import savingRouter from "./routes/saving.routes.js";
@@ -11,8 +11,8 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true}));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/saving", savingRouter);
 
@@ -23,11 +23,10 @@ app.use((req, res, next) => {
   next();
 });
 
-
 app.use((req, res) => {
   res.status(404).json({
     error: "Not found",
-    path: req.path
+    path: req.path,
   });
 });
 

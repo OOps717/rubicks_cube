@@ -14,7 +14,7 @@
 }
 
 .list-group-item.active {
-  background-color: #ff5722;   /* нужный цвет */
+  background-color: #ff5722; /* нужный цвет */
   border-color: #ff5722;
   color: #fff;
 }
@@ -63,4 +63,3 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
-

@@ -34,7 +34,7 @@ function ListGroup(props) {
       if (!running) return;
 
       const id = setInterval(() => {
-        setSeconds(s => s + 1);
+        setSeconds((s) => s + 1);
       }, 1000);
 
       return () => clearInterval(id);
@@ -44,7 +44,14 @@ function ListGroup(props) {
     const minutes = Math.floor((seconds % 3600) / 60);
 
     return (
-      <div className="timer" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gridGap: 20 }}>
+      <div
+        className="timer"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gridGap: 20,
+        }}
+      >
         <div>hours: {hours}</div>
         <div>minutes: {minutes}</div>
         <div>seconds: {seconds % 60}</div>
@@ -55,7 +62,11 @@ function ListGroup(props) {
   const loadAllSavings = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/saving/");
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
       const data = await response.json();
+      console.log(data.rows);
       setSavings(data.rows);
     } catch (err) {
       console.error("Failed to load savings", err);
@@ -80,10 +91,9 @@ function ListGroup(props) {
       }}
     >
       <ul className="list-group">
-        <li 
-          key="timer" 
-          className="list-group-item"
-        ><Timer></Timer></li>
+        <li key="timer" className="list-group-item">
+          <Timer></Timer>
+        </li>
         {/* <li 
           key="size" 
           className={selected === "size" ? "list-group-item active" : "list-group-item"}
@@ -96,47 +106,63 @@ function ListGroup(props) {
           />
           <button type="button" className="btn btn-primaryс" onClick={applySize}>Apply size</button>
         </li> */}
-        <li 
-          key="main-buttons" 
+        <li
+          key="main-buttons"
           className="list-group-item d-flex justify-content-between align-items-center"
         >
-          <button type="button" className="btn btn-primary" onClick={start} disabled={running}>Start</button>
-          <button type="button" className="btn btn-primary" onClick={restart} disabled={!running}>Restart</button>
-          <button type="button" className="btn btn-primary" onClick={stop} disabled={!running}>Stop</button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={start}
+            disabled={running}
+          >
+            Start
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={restart}
+            disabled={!running}
+          >
+            Restart
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={stop}
+            disabled={!running}
+          >
+            Stop
+          </button>
         </li>
-        <li
-          key="savings-table"
-          className="list-group-item"
-        >
-          <Savings 
+        <li key="savings-table" className="list-group-item">
+          <Savings
             savings={savings}
-            setLoadedData={setLoadedData} 
+            setLoadedData={setLoadedData}
             setSeconds={setSeconds}
             setRunning={setRunning}
+            loadAllSavings={loadAllSavings}
             paramsRef={paramsRef}
-          >  
-          </Savings>
+          ></Savings>
         </li>
-        <li 
-          key="save-button" 
+        <li
+          key="save-button"
           className="list-group-item d-flex justify-content-between align-items-center"
         >
-          <SaveButton 
-            duration={seconds} 
-            running={running} 
+          <SaveButton
+            duration={seconds}
+            running={running}
             cubeState={cubeState}
             loadAllSavings={loadAllSavings}
           ></SaveButton>
-          <LoadLatestButton 
-            setLoadedData={setLoadedData} 
+          <LoadLatestButton
+            setLoadedData={setLoadedData}
             setSeconds={setSeconds}
             setRunning={setRunning}
             paramsRef={paramsRef}
-          >  
-          </LoadLatestButton>
+          ></LoadLatestButton>
         </li>
       </ul>
-
     </div>
   );
 }

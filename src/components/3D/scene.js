@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import RubicksCube from "./rubicksCube";
 
 export function createScene() {
@@ -11,7 +11,7 @@ export function createScene() {
     60,
     window.innerWidth / window.innerHeight,
     0.1,
-    100
+    100,
   );
   camera.position.set(3, 3, 3);
   camera.lookAt(0, 0, 0);
@@ -28,7 +28,11 @@ export function createScene() {
   light.shadow.camera.far = 50;
   scene.add(light);
 
-  const rubicksCube = new RubicksCube({scene: scene, size: 3, cubeSize: 0.995})
+  const rubicksCube = new RubicksCube({
+    scene: scene,
+    size: 3,
+    cubeSize: 0.995,
+  });
 
   return { scene, camera, rubicksCube };
 }

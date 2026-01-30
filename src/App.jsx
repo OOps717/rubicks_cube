@@ -3,11 +3,11 @@ import { initThree } from "./components/3D/main";
 import ListGroup from "./components/ListGroup";
 
 function App() {
-  const paramsRef = useRef({ 
-    started: false, 
-    restarted: false, 
-    stopped: false, 
-    running: false 
+  const paramsRef = useRef({
+    started: false,
+    restarted: false,
+    stopped: false,
+    running: false,
   });
   const threeContainerRef = useRef(null);
   const [cubeState, setCubeState] = useState(null);
@@ -17,17 +17,26 @@ function App() {
 
   useEffect(() => {
     loadedRef.current.data = loadedData;
-  }, [loadedData])
+  }, [loadedData]);
 
   useEffect(() => {
     if (!threeContainerRef.current) return;
-    const cleanup = initThree(threeContainerRef.current, paramsRef, setCubeState, loadedRef);
+    const cleanup = initThree(
+      threeContainerRef.current,
+      paramsRef,
+      setCubeState,
+      loadedRef,
+    );
     return cleanup;
   }, []);
 
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
-      <ListGroup paramsRef={paramsRef} cubeState={cubeState} setLoadedData={setLoadedData}/>
+      <ListGroup
+        paramsRef={paramsRef}
+        cubeState={cubeState}
+        setLoadedData={setLoadedData}
+      />
       <div
         ref={threeContainerRef}
         style={{
@@ -40,4 +49,3 @@ function App() {
 }
 
 export default App;
-
